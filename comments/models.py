@@ -12,7 +12,7 @@ class User(models.Model):
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='replies')
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
     text = models.TextField()
     image = models.ImageField(upload_to='images/', blank=True, null=True)
     file = models.FileField(upload_to='files/', blank=True, null=True)
