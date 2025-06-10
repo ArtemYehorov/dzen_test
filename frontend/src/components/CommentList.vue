@@ -1,5 +1,13 @@
 <template>
   <div class="max-w-3xl mx-auto space-y-4">
+  <div class="mb-4">
+  <label class="text-sm font-medium">Сортировать по: </label>
+  <select v-model="sortBy" class="ml-2 p-1 border rounded">
+    <option value="created_at">Дате</option>
+    <option value="user.name">Имени</option>
+    <option value="user.email">Email</option>
+  </select>
+</div>
     <div v-for="comment in displayComments" :key="comment.id" class="bg-white border rounded p-4">
       <p class="text-sm text-gray-600">
         <strong>{{ comment.user.name }}</strong>
@@ -10,7 +18,7 @@
       <div class="mt-2" v-html="comment.text"></div>
 
       <div v-if="comment.image" class="mt-2">
-        <img :src="`http://127.0.0.1:8000${comment.image}`" alt="картинка" class="max-w-xs rounded border" />
+            <ImagePreview :src="comment.image" />
       </div>
 
       <div v-if="comment.file" class="mt-2">
@@ -27,6 +35,7 @@
 </template>
 
 <script>
+import ImagePreview from './ImagePreview.vue';
 import axios from 'axios';
 
 export default {
@@ -40,6 +49,7 @@ export default {
   data() {
     return {
       loaded: false,
+      sortBy: 'created_at',
       localComments: []
     };
   },
@@ -55,17 +65,31 @@ export default {
     }
   },
   methods: {
-    formatDate(dateStr) {
-      const d = new Date(dateStr);
-      return d.toLocaleString();
-    }
+  extractField(obj, path) {
+    return path.split('.').reduce((acc, key) => acc?.[key], obj);
   },
+  formatDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleString();
+  }
+},
   components: {
+    ImagePreview,
     CommentList: () => import('./CommentList.vue')
   },
-  computed: {
-    displayComments() {
-        return this.comments || this.localComments || [];
+    computed: {
+        displayComments() {
+    const list = this.comments || this.localComments || [];
+
+    return list.slice().sort((a, b) => {
+      let aValue = this.extractField(a, this.sortBy);
+      let bValue = this.extractField(b, this.sortBy);
+
+      aValue = (aValue || '').toString().toLowerCase();
+      bValue = (bValue || '').toString().toLowerCase();
+
+      return aValue.localeCompare(bValue);
+    });
   }
 }
 };

@@ -11,11 +11,13 @@
 <script>
 import CommentForm from './components/CommentForm.vue'
 import CommentList from './components/CommentList.vue'
+import ImagePreview from './components/ImagePreview.vue'
 
 export default {
   components: {
     CommentForm,
-    CommentList
+    CommentList,
+    ImagePreview
   }
 }
 </script>

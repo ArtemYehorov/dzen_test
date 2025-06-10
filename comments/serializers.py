@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import User, Comment
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
+from django import forms
+from captcha.fields import CaptchaField
 import re
 import bleach
 from PIL import Image
@@ -30,6 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    captcha = CaptchaField()
     replies = serializers.SerializerMethodField()
 
     class Meta:

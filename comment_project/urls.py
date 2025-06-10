@@ -21,3 +21,6 @@ urlpatterns = [
     path('api/register/', RegisterView.as_view(), name='register'),
     path('', lambda request: HttpResponse("Главная страница, здесь пока пусто.")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
