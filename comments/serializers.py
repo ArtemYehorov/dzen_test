@@ -29,16 +29,56 @@ class UserSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Неверный URL.")
         return value
 
+class CommentCreateSerializer(serializers.ModelSerializer):
+    captcha = serializers.CharField(write_only=True)
+    captcha_key = serializers.CharField(write_only=True)
+    name = serializers.CharField(write_only=True)
+    email = serializers.EmailField(write_only=True)
+    home_page = serializers.URLField(required=False, allow_blank=True, allow_null=True, write_only=True)
+
+    class Meta:
+        model = Comment
+        fields = [
+            'name', 'email', 'home_page',
+            'text', 'file', 'image', 'parent',
+            'captcha', 'captcha_key'
+        ]
+
+    def create(self, validated_data):
+        from captcha.models import CaptchaStore
+
+        captcha_key = validated_data.pop('captcha_key')
+        captcha_value = validated_data.pop('captcha')
+
+        if not CaptchaStore.objects.filter(hashkey=captcha_key, response__iexact=captcha_value).exists():
+            raise serializers.ValidationError({'captcha': 'Неверная CAPTCHA'})
+
+        name = validated_data.pop('name')
+        email = validated_data.pop('email')
+        home_page = validated_data.pop('home_page', '')
+
+        user, _ = User.objects.get_or_create(
+            email=email,
+            defaults={'name': name, 'home_page': home_page}
+        )
+
+        return Comment.objects.create(user=user, **validated_data)
 
 class CommentSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    captcha = CaptchaField()
     replies = serializers.SerializerMethodField()
 
     class Meta:
         model = Comment
-        fields = ['id', 'user', 'parent', 'text', 'image', 'file', 'created_at', 'replies']
+        fields = [
+            'id', 'user', 'text', 'file', 'image',
+            'parent', 'created_at', 'replies'
+        ]
         read_only_fields = ['created_at']
+
+    def get_replies(self, obj):
+        children = obj.replies.all().order_by('-created_at')
+        return CommentSerializer(children, many=True).data
 
     def get_replies(self, obj):
         children = obj.replies.all().order_by('-created_at')

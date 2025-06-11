@@ -12,11 +12,12 @@ class User(models.Model):
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
+    home_page = models.URLField(blank=True, null=True)
     text = models.TextField()
-    image = models.ImageField(upload_to='images/', blank=True, null=True)
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='replies', on_delete=models.CASCADE)
     file = models.FileField(upload_to='files/', blank=True, null=True)
+    image = models.ImageField(upload_to='images/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Comment by {self.user.name} at {self.created_at}"
+        return f"{self.user.name} ({self.user.email})"

@@ -1,13 +1,13 @@
 <template>
   <form @submit.prevent="submitComment" class="max-w-xl mx-auto bg-white p-4 rounded shadow space-y-4">
     <div>
-      <input v-model="form.user.name" type="text" placeholder="Ваше имя" class="w-full border p-2 rounded" required />
+      <input v-model="form.name" type="text" placeholder="Ваше имя" class="w-full border p-2 rounded" required />
     </div>
     <div>
-      <input v-model="form.user.email" type="email" placeholder="Email" class="w-full border p-2 rounded" required />
+      <input v-model="form.email" type="email" placeholder="Email" class="w-full border p-2 rounded" required />
     </div>
     <div>
-      <input v-model="form.user.home_page" type="url" placeholder="Домашняя страница (опц.)" class="w-full border p-2 rounded" />
+      <input v-model="form.home_page" type="url" placeholder="Домашняя страница (опц.)" class="w-full border p-2 rounded" />
     </div>
     <div>
       <textarea v-model="form.text" placeholder="Комментарий..." rows="4" class="w-full border p-2 rounded" required></textarea>
@@ -15,6 +15,10 @@
     <div class="flex gap-2">
       <input type="file" @change="handleFileUpload" accept=".txt" />
       <input type="file" @change="handleImageUpload" accept="image/*" />
+    </div>
+    <div class="flex items-center gap-4">
+      <img :src="captchaImageUrl" alt="CAPTCHA" class="cursor-pointer h-12" @click="loadCaptcha" />
+      <input type="text" v-model="captchaInput" placeholder="Введите CAPTCHA" class="border p-2 rounded w-full" required />
     </div>
     <div class="flex gap-2">
       <button type="button" @click="insertTag('i')" class="bg-gray-200 px-2 py-1 rounded">[i]</button>
@@ -33,17 +37,21 @@ export default {
   data() {
     return {
       form: {
-        user: {
-          name: '',
-          email: '',
-          home_page: '',
-        },
+        name: '',
+        email: '',
+        home_page: '',
         text: '',
         parent: null,
         file: null,
-        image: null,
-      }
+        image: null
+      },
+      captchaKey: '',
+      captchaImageUrl: '',
+      captchaInput: ''
     };
+  },
+  mounted() {
+    this.loadCaptcha();
   },
   methods: {
     insertTag(tag) {
@@ -57,29 +65,41 @@ export default {
     handleImageUpload(event) {
       this.form.image = event.target.files[0];
     },
+    async loadCaptcha() {
+      try {
+        const response = await axios.get('http://127.0.0.1:8000/api/comments/captcha/');
+        this.captchaKey = response.data.captcha_key;
+        this.captchaImageUrl = response.data.captcha_image_url;
+      } catch (error) {
+        console.error('Ошибка загрузки CAPTCHA:', error);
+      }
+    },
     async submitComment() {
       try {
         const formData = new FormData();
-        formData.append('user.name', this.form.user.name);
-        formData.append('user.email', this.form.user.email);
-        formData.append('user.home_page', this.form.user.home_page);
+        formData.append('name', this.form.name);
+        formData.append('email', this.form.email);
+        formData.append('home_page', this.form.home_page);
         formData.append('text', this.form.text);
+        formData.append('captcha', this.captchaInput);
+        formData.append('captcha_key', this.captchaKey);
         if (this.form.file) formData.append('file', this.form.file);
         if (this.form.image) formData.append('image', this.form.image);
         if (this.form.parent) formData.append('parent', this.form.parent);
 
-        const response = await axios.post('http://127.0.0.1:8000/api/comments/', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
+        await axios.post('http://127.0.0.1:8000/api/comments/', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
         });
 
         alert('Комментарий отправлен!');
         this.form.text = '';
         this.form.file = null;
         this.form.image = null;
+        this.captchaInput = '';
+        this.loadCaptcha();
       } catch (error) {
-        alert('Ошибка при отправке: ' + error.message);
+        alert('Ошибка при отправке: ' + (error.response?.data?.captcha || error.response?.data?.detail || error.message));
+        this.loadCaptcha();
         console.error(error);
       }
     }
