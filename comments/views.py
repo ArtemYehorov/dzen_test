@@ -1,12 +1,17 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
-from .models import Comment
-from .serializers import CommentSerializer
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import generics
-from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny
 from rest_framework.serializers import ModelSerializer
+from rest_framework.generics import ListAPIView
+
+from django.contrib.auth.models import User
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+
+from .models import Comment
+from .serializers import CommentSerializer
 
 
 class CommentPagination(PageNumberPagination):
@@ -14,9 +19,14 @@ class CommentPagination(PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 100
 
+@method_decorator(cache_page(60 * 3), name='dispatch')  # 3 минуты
+class CachedCommentListView(ListAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
+    pagination_class = CommentPagination
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.filter(parent=None).order_by('-created_at')
+    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     pagination_class = CommentPagination
 
@@ -26,6 +36,7 @@ class CommentViewSet(viewsets.ModelViewSet):
         comment = serializer.save()
         return Response(CommentSerializer(comment).data, status=status.HTTP_201_CREATED)
 
+
 class RegisterSerializer(ModelSerializer):
     class Meta:
         model = User
@@ -33,12 +44,11 @@ class RegisterSerializer(ModelSerializer):
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
-            user = User.objects.create_user(
-                username=validated_data['username'],
-                email=validated_data['email'],
-                password=validated_data['password']
-            )
-            return user
+        return User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            password=validated_data['password']
+        )
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
