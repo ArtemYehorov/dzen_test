@@ -18,11 +18,11 @@ export default {
     CommentForm,
     CommentList,
     ImagePreview
+  },
+  methods: {
+    fetchCommentsFromChild() {
+      this.$refs.commentList?.fetchComments();
+    }
   }
-},
-methods: {
-  fetchCommentsFromChild() {
-    this.$refs.commentList?.fetchComments();
-  }
-}
+};
 </script>
