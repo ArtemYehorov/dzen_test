@@ -47,12 +47,6 @@ import axios from 'axios';
 
 export default {
   name: 'CommentList',
-  props: {
-    comments: {
-      type: Array,
-      default: null
-    }
-  },
   data() {
     return {
       localComments: [],
@@ -62,18 +56,7 @@ export default {
     };
   },
   mounted() {
-    if (!this.comments) {
-      this.fetchComments();
-    }
-  },
-  watch: {
-    sortBy() {
-      this.page = 1;
-      this.fetchComments();
-    },
-    page() {
-      this.fetchComments();
-    }
+    this.fetchComments();
   },
   methods: {
     formatDate(dateStr) {
@@ -95,18 +78,25 @@ export default {
       }
     },
     nextPage() {
-      if (this.page < 100) { // защита от зацикливания
-        this.page++;
-      }
+      this.page++;
+      this.fetchComments();
     },
     prevPage() {
       if (this.page > 1) {
         this.page--;
+        this.fetchComments();
       }
     }
   },
   components: {
-    ImagePreview
+    ImagePreview,
+    CommentList: () => import('./CommentList.vue')
+  },
+  watch: {
+    sortBy() {
+      this.page = 1;
+      this.fetchComments();
+    }
   }
 };
 </script>
