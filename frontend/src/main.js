@@ -4,3 +4,5 @@ import App from './App.vue'
 
 createApp(App).mount('#app')
 
+axios.defaults.baseURL = 'https://dzen-test-fjvl.onrender.com';
+

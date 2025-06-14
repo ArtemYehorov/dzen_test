@@ -22,7 +22,7 @@
       </div>
 
       <div v-if="comment.file" class="mt-2">
-        <a :href="`http://127.0.0.1:8000${comment.file}`" target="_blank" class="text-blue-600 underline">
+        <a :href="`https://dzen-test-fjvl.onrender.com${comment.file}`" target="_blank" class="text-blue-600 underline">
           📎 Открыть файл
         </a>
       </div>
@@ -56,7 +56,7 @@ export default {
   async created() {
     if (!this.comments) {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/comments/');
+        const response = await axios.get('https://dzen-test-fjvl.onrender.com/api/comments/');
         this.localComments = response.data.results;
         this.loaded = true;
       } catch (err) {
