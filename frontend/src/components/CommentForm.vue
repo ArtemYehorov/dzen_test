@@ -12,6 +12,10 @@
     <div>
       <textarea v-model="form.text" placeholder="Комментарий..." rows="4" class="w-full border p-2 rounded" required></textarea>
     </div>
+    <div class="border p-2 rounded bg-white text-black">
+        <h3 class="font-semibold mb-1">Предпросмотр:</h3>
+        <div v-html="sanitizedPreview"></div>
+    </div>
     <div class="flex gap-2">
       <input type="file" @change="handleFileUpload" accept=".txt" />
       <input type="file" @change="handleImageUpload" accept="image/*" />
@@ -32,6 +36,7 @@
 
 <script>
 import axios from 'axios';
+import DOMPurify from 'dompurify';
 
 export default {
   data() {
@@ -50,9 +55,17 @@ export default {
       captchaInput: ''
     };
   },
+
   mounted() {
     this.loadCaptcha();
   },
+
+  computed: {
+    sanitizedPreview() {
+      return DOMPurify.sanitize(this.form.text);
+    }
+  },
+
   methods: {
     insertTag(tag) {
       const open = `<${tag}>`;
