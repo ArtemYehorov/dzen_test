@@ -80,7 +80,7 @@ export default {
     },
     async loadCaptcha() {
       try {
-        const response = await axios.get('http://127.0.0.1:8000/api/comments/captcha/');
+        const response = await axios.get('https://dzen-test-fjvl.onrender.com/api/comments/captcha/');
         this.captchaKey = response.data.captcha_key;
         this.captchaImageUrl = response.data.captcha_image_url;
       } catch (error) {
@@ -100,7 +100,7 @@ export default {
         if (this.form.image) formData.append('image', this.form.image);
         if (this.form.parent) formData.append('parent', this.form.parent);
 
-        await axios.post('http://127.0.0.1:8000/api/comments/', formData, {
+        await axios.post('https://dzen-test-fjvl.onrender.com/api/comments/', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
 

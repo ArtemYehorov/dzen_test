@@ -33,7 +33,7 @@ export default {
   computed: {
     fullSrc() {
         const path = this.src.startsWith('/') ? this.src : `/${this.src}`;
-        return this.src.startsWith('http') ? this.src : `http://127.0.0.1:8000${path}`;
+        return this.src.startsWith('http') ? this.src : `https://dzen-test-fjvl.onrender.com${path}`;
     }
   },
   mounted() {
