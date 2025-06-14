@@ -1,10 +1,10 @@
 <template>
   <main class="p-8 bg-gray-100 min-h-screen space-y-6">
     <h1 class="text-2xl font-bold">Добавить комментарий</h1>
-    <CommentForm />
+    <CommentForm @refresh="fetchCommentsFromChild" />
 
     <h2 class="text-xl font-semibold mt-8">Комментарии</h2>
-    <CommentList />
+    <CommentList ref="commentList" />
   </main>
 </template>
 
@@ -18,6 +18,11 @@ export default {
     CommentForm,
     CommentList,
     ImagePreview
+  }
+},
+methods: {
+  fetchCommentsFromChild() {
+    this.$refs.commentList?.fetchComments();
   }
 }
 </script>

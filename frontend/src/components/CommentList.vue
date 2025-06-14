@@ -66,6 +66,15 @@ export default {
       this.fetchComments();
     }
   },
+  watch: {
+    sortBy() {
+      this.page = 1;
+      this.fetchComments();
+    },
+    page() {
+      this.fetchComments();
+    }
+  },
   methods: {
     formatDate(dateStr) {
       const d = new Date(dateStr);
@@ -86,25 +95,18 @@ export default {
       }
     },
     nextPage() {
-      this.page++;
-      this.fetchComments();
+      if (this.page < 100) { // защита от зацикливания
+        this.page++;
+      }
     },
     prevPage() {
       if (this.page > 1) {
         this.page--;
-        this.fetchComments();
       }
     }
   },
   components: {
-    ImagePreview,
-    CommentList: () => import('./CommentList.vue')
-  },
-  watch: {
-    sortBy() {
-      this.page = 1;
-      this.fetchComments();
-    }
+    ImagePreview
   }
 };
 </script>

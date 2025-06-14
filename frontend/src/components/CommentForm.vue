@@ -119,32 +119,37 @@ export default {
     },
 
     async submitComment() {
-      try {
-        const formData = new FormData();
-        formData.append('name', this.form.name);
-        formData.append('email', this.form.email);
-        formData.append('home_page', this.form.home_page);
-        formData.append('text', this.form.text);
-        formData.append('captcha', this.captchaInput);
-        formData.append('captcha_key', this.captchaKey);
-        if (this.form.file) formData.append('file', this.form.file);
-        if (this.form.image) formData.append('image', this.form.image);
-        if (this.form.parent) formData.append('parent', this.form.parent);
+  try {
+    const formData = new FormData();
+    formData.append('name', this.form.name);
+    formData.append('email', this.form.email);
+    formData.append('home_page', this.form.home_page);
+    formData.append('text', this.form.text);
+    formData.append('captcha', this.captchaInput);
+    formData.append('captcha_key', this.captchaKey);
+    if (this.form.file) formData.append('file', this.form.file);
+    if (this.form.image) formData.append('image', this.form.image);
+    if (this.form.parent) formData.append('parent', this.form.parent);
 
-        await axios.post('https://dzen-test-fjvl.onrender.com/api/comments/', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' }
-        });
+    await axios.post('https://dzen-test-fjvl.onrender.com/api/comments/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
 
-        alert('Комментарий отправлен!');
-        this.resetForm();
-        this.loadCaptcha();
-        this.loadTopLevelComments();
-      } catch (error) {
-        alert('Ошибка при отправке: ' + (error.response?.data?.captcha || error.response?.data?.detail || error.message));
-        this.loadCaptcha();
-        console.error(error);
-      }
-    },
+    alert('Комментарий отправлен!');
+    this.resetForm();
+    this.loadCaptcha();
+    this.loadTopLevelComments();
+
+    // 🔥 Обновление списка через ref
+    if (this.$refs.commentList) {
+      this.$refs.commentList.fetchComments();
+    }
+  } catch (error) {
+    alert('Ошибка при отправке: ' + (error.response?.data?.captcha || error.response?.data?.detail || error.message));
+    this.loadCaptcha();
+    console.error(error);
+  }
+},
 
     resetForm() {
       this.form = {
