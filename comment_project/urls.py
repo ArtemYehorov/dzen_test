@@ -12,7 +12,7 @@ router.register(r'comments', CommentViewSet, basename='comment')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/comments/captcha/', CaptchaAPIView.as_view(), name='captcha'),  # ✅ сюда
+    path('api/comments/captcha/', CaptchaAPIView.as_view(), name='captcha'),
     path('api/', include([
         path('', include(router.urls)),
         path('comments_cached/', CachedCommentListView.as_view(), name='comments-cached'),
@@ -22,8 +22,6 @@ urlpatterns = [
         path('captcha/', include('captcha.urls')),
     ])),
     path('', lambda request: HttpResponse("Главная страница")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
 
-# Отдача media в режиме DEBUG
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
