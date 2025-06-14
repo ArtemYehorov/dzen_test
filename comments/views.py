@@ -5,6 +5,7 @@ from rest_framework import generics
 from rest_framework.permissions import AllowAny
 from rest_framework.serializers import ModelSerializer
 from rest_framework.generics import ListAPIView
+from rest_framework.filters import OrderingFilter
 
 from django.contrib.auth.models import User
 from django.views.decorators.cache import cache_page
@@ -23,7 +24,7 @@ class CommentPagination(PageNumberPagination):
     max_page_size = 100
 
 
-@method_decorator(cache_page(60 * 3), name='dispatch')  # 3 минуты
+@method_decorator(cache_page(60 * 3), name='dispatch')
 class CachedCommentListView(ListAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -31,8 +32,11 @@ class CachedCommentListView(ListAPIView):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
+    queryset = Comment.objects.filter(parent=None)
     pagination_class = CommentPagination
+    filter_backends = [OrderingFilter]
+    ordering_fields = ['created_at']
+    ordering = ['-created_at']
 
     def get_serializer_class(self):
         if self.action == 'create':
@@ -53,7 +57,6 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     @staticmethod
     def captcha(request):
-        """Выдача новой CAPTCHA"""
         new_key = CaptchaStore.generate_key()
         image_url = captcha_image_url(new_key)
         return Response({'captcha_key': new_key, 'image_url': image_url})
