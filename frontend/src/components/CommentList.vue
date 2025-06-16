@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-3xl mx-auto space-y-4">
+  <div :class="['max-w-3xl mx-auto space-y-4', isReply ? 'ml-4 text-sm bg-gray-50 p-2 border-l-2 border-blue-300 rounded'] : '']">
     <div v-if="!comments" class="mb-4 flex items-center space-x-2">
       <label class="text-sm font-medium">Сортировать по:</label>
       <select v-model="sortBy" class="p-1 border rounded">
@@ -10,7 +10,14 @@
       </select>
     </div>
 
-    <div v-for="comment in sortedComments" :key="comment.id" class="bg-white border rounded p-4">
+    <div
+      v-for="comment in sortedComments"
+      :key="comment.id"
+      :class="[
+        'border rounded p-4',
+        isReply ? 'bg-gray-50 text-sm ml-2' : 'bg-white'
+      ]"
+    >
       <p class="text-sm text-gray-600">
         <strong>{{ comment.user.name }}</strong>
         <span class="text-gray-400">({{ comment.user.email }})</span><br />
@@ -29,7 +36,7 @@
       </div>
 
       <div v-if="comment.replies?.length" class="mt-4 pl-4 border-l-2 border-gray-300 space-y-2">
-        <CommentList :comments="comment.replies" />
+        <CommentList :comments="comment.replies" :is-reply="true" />
       </div>
     </div>
 
@@ -51,6 +58,10 @@ export default {
     comments: {
       type: Array,
       default: null
+    },
+    isReply: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
