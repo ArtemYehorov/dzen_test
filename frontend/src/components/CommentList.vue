@@ -10,7 +10,7 @@
       </select>
     </div>
 
-    <div v-for="comment in localComments" :key="comment.id">
+    <div v-for="comment in sortedComments" :key="comment.id" class="bg-white border rounded p-4">
       <p class="text-sm text-gray-600">
         <strong>{{ comment.user.name }}</strong>
         <span class="text-gray-400">({{ comment.user.email }})</span><br />
@@ -47,6 +47,12 @@ import axios from 'axios';
 
 export default {
   name: 'CommentList',
+  props: {
+    comments: {
+      type: Array,
+      default: null
+    }
+  },
   data() {
     return {
       localComments: [],
@@ -56,7 +62,11 @@ export default {
     };
   },
   mounted() {
-    this.fetchComments();
+    if (!this.comments) {
+      this.fetchComments();
+    } else {
+      this.localComments = this.comments;
+    }
   },
   methods: {
     formatDate(dateStr) {
@@ -88,15 +98,42 @@ export default {
       }
     }
   },
-  components: {
-    ImagePreview,
-    CommentList: () => import('./CommentList.vue')
+  computed: {
+    sortedComments() {
+      const comments = this.localComments.slice();
+
+      if (this.sortBy === 'user__name') {
+        return comments.sort((a, b) =>
+          (a.user?.name || '').localeCompare(b.user?.name || '')
+        );
+      }
+
+      if (this.sortBy === 'user__email') {
+        return comments.sort((a, b) =>
+          (a.user?.email || '').localeCompare(b.user?.email || '')
+        );
+      }
+
+      if (this.sortBy === 'created_at') {
+        return comments.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+      }
+
+      if (this.sortBy === '-created_at') {
+        return comments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      }
+
+      return comments;
+    }
   },
   watch: {
     sortBy() {
       this.page = 1;
       this.fetchComments();
     }
+  },
+  components: {
+    ImagePreview,
+    CommentList: () => import('./CommentList.vue')
   }
 };
 </script>
