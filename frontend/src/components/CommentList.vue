@@ -29,9 +29,13 @@
       </div>
 
       <div v-if="comment.file" class="mt-2">
-       <a :href="`https://dzen-test-fjvl.onrender.com/serve-file/${comment.file}`" target="_blank">
+        <a
+            :href="`https://dzen-test-fjvl.onrender.com/serve-file/${comment.file.replace('/media/', '')}`"
+            target="_blank"
+            class="text-blue-600 underline"
+        >
             📎 Открыть файл
-       </a>
+        </a>
       </div>
 
       <div v-if="comment.replies?.length" class="mt-4 space-y-2">
