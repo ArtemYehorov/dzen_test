@@ -10,16 +10,16 @@
       </select>
     </div>
 
-   <div
+    <div
     v-for="comment in sortedComments"
     :key="comment.id"
     :class="[
-            'border rounded p-4',
-            depth === 0
-            ? 'bg-white'
-            : 'bg-gray-100 text-sm ml-4 border-l-4 border-gray-400'
-        ]"
-      >
+        'rounded p-4',
+        depth === 0
+        ? 'bg-white border'
+        : 'bg-gray-100 border border-blue-300 text-sm ml-4'
+    ]"
+    >
       <p class="text-sm text-gray-600">
         <strong>{{ comment.user.name }}</strong>
         <span class="text-gray-400">({{ comment.user.email }})</span><br />
