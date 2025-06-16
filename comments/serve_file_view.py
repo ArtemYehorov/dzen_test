@@ -1,9 +1,7 @@
 import os
 from django.conf import settings
-from django.http import FileResponse, Http404
-from django.utils.encoding import smart_str
+from django.http import HttpResponse, Http404
 from django.utils._os import safe_join
-from mimetypes import guess_type
 
 
 def serve_file_with_charset(request, file_path):
@@ -15,12 +13,13 @@ def serve_file_with_charset(request, file_path):
     if not os.path.exists(full_path):
         raise Http404("Файл не найден")
 
-    content_type, _ = guess_type(full_path)
+    try:
+        with open(full_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        content_type = 'text/plain; charset=utf-8'
+    except UnicodeDecodeError:
+        with open(full_path, 'r', encoding='windows-1251') as f:
+            content = f.read()
+        content_type = 'text/plain; charset=windows-1251'
 
-    # Добавим charset для текстовых файлов
-    if content_type == "text/plain":
-        content_type += "; charset=windows-1251"
-
-    response = FileResponse(open(full_path, 'rb'), content_type=content_type)
-    response['Content-Disposition'] = f'inline; filename="{smart_str(os.path.basename(full_path))}"'
-    return response
+    return HttpResponse(content, content_type=content_type)
