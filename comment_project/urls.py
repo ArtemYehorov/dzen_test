@@ -4,9 +4,11 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
-from comments.views import CommentViewSet, RegisterView, CachedCommentListView, CaptchaAPIView
+from comments.views import (
+    CommentViewSet, RegisterView, CachedCommentListView,
+    CaptchaAPIView, serve_file_with_charset
+)
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from comments.views import serve_file_with_encoding
 
 router = DefaultRouter()
 router.register(r'comments', CommentViewSet, basename='comment')
@@ -21,9 +23,10 @@ urlpatterns = [
         path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
         path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
         path('captcha/', include('captcha.urls')),
-        #path('serve-file/<path:file_path>', serve_file_with_encoding, name='serve_file'),
-        re_path(r'^serve-file/(?P<file_path>.+)$', serve_file_with_encoding),
     ])),
+
+    re_path(r'^serve-file/(?P<file_path>.+)$', serve_file_with_charset),
+
     path('', lambda request: HttpResponse("Главная страница")),
 ]
 
