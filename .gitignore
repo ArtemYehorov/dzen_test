@@ -13,6 +13,7 @@ node_modules/
 .DS_Store
 .idea/
 .vscode/
-/media/*
+!media/*
 !/media/.gitkeep
-!/media/files/.gitkeep
+!files/*
+!/files/.gitkeep

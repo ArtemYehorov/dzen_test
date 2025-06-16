@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.http import HttpResponse
 from django.conf import settings
 from django.conf.urls.static import static
@@ -22,6 +22,7 @@ urlpatterns = [
         path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
         path('captcha/', include('captcha.urls')),
         path('serve-file/<path:file_path>', serve_file_with_encoding, name='serve_file'),
+        re_path(r'^serve-file/(?P<file_path>.+)$', serve_file_with_encoding),
     ])),
     path('', lambda request: HttpResponse("Главная страница")),
 ]
