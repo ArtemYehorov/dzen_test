@@ -21,7 +21,10 @@ export default {
   },
   methods: {
     fetchCommentsFromChild() {
-      this.$refs.commentList?.fetchComments();
+      if (this.$refs.commentList) {
+        this.$refs.commentList.page = 1;
+        this.$refs.commentList.fetchComments();
+      }
     }
   }
 };

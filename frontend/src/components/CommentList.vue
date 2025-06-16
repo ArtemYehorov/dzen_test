@@ -5,8 +5,8 @@
       <select v-model="sortBy" class="p-1 border rounded">
         <option value="-created_at">Дате (новые)</option>
         <option value="created_at">Дате (старые)</option>
-        <option value="user.name">Имени</option>
-        <option value="user.email">Email</option>
+        <option value="user__name">Имени</option>
+        <option value="user__email">Email</option>
       </select>
     </div>
 
