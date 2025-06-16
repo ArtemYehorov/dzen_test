@@ -111,40 +111,40 @@ export default {
       }
     }
   },
-  computed: {
-    wrapperClass() {
-      return this.isReply
-        ? 'ml-4 text-sm bg-gray-50 p-2 border-l-2 border-blue-300 rounded'
-        : 'max-w-3xl mx-auto space-y-4';
-    },
+computed: {
+  wrapperClass() {
+    return this.depth > 0
+      ? 'ml-4 text-sm bg-gray-50 p-2 border-l-2 border-blue-300 rounded space-y-2'
+      : 'max-w-3xl mx-auto space-y-4';
+  },
     sortedComments() {
-      const comments = this.localComments.slice();
+        const comments = this.localComments.slice();
 
-      if (this.sortBy === 'user__name') {
+        if (this.sortBy === 'user__name') {
         return comments.sort((a, b) =>
-          (a.user?.name || '').localeCompare(b.user?.name || '')
+            (a.user?.name || '').localeCompare(b.user?.name || '')
         );
-      }
+        }
 
-      if (this.sortBy === 'user__email') {
+        if (this.sortBy === 'user__email') {
         return comments.sort((a, b) =>
-          (a.user?.email || '').localeCompare(b.user?.email || '')
+            (a.user?.email || '').localeCompare(b.user?.email || '')
         );
-      }
+        }
 
-      if (this.sortBy === 'created_at') {
+        if (this.sortBy === 'created_at') {
         return comments.sort((a, b) =>
-          new Date(a.created_at) - new Date(b.created_at)
+            new Date(a.created_at) - new Date(b.created_at)
         );
-      }
+        }
 
-      if (this.sortBy === '-created_at') {
+        if (this.sortBy === '-created_at') {
         return comments.sort((a, b) =>
-          new Date(b.created_at) - new Date(a.created_at)
+            new Date(b.created_at) - new Date(a.created_at)
         );
-      }
+        }
 
-      return comments;
+        return comments;
     }
   },
   watch: {
