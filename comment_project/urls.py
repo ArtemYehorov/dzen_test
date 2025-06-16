@@ -21,7 +21,7 @@ urlpatterns = [
         path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
         path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
         path('captcha/', include('captcha.urls')),
-        path('serve-file/<path:file_path>', serve_file_with_encoding, name='serve_file'),
+        #path('serve-file/<path:file_path>', serve_file_with_encoding, name='serve_file'),
         re_path(r'^serve-file/(?P<file_path>.+)$', serve_file_with_encoding),
     ])),
     path('', lambda request: HttpResponse("Главная страница")),
