@@ -82,7 +82,7 @@ export default {
       this.localComments = this.comments;
     }
   },
-  methods: {
+ methods: {
     formatDate(dateStr) {
       const d = new Date(dateStr);
       return d.toLocaleString();
@@ -110,15 +110,15 @@ export default {
         this.page--;
         this.fetchComments();
       }
-    }
+    }, // ← вот тут нужна запятая!
     getFileUrl(filePath) {
-        try {
-            const url = new URL(filePath);
-            const relative = url.pathname.replace(/^\/media\//, '');
-            return `https://dzen-test-fjvl.onrender.com/serve-file/${relative}`;
-        } catch {
-            return `https://dzen-test-fjvl.onrender.com/serve-file/${filePath.replace(/^\/media\//, '')}`;
-        }
+      try {
+        const url = new URL(filePath);
+        const relative = url.pathname.replace(/^\/media\//, '');
+        return `https://dzen-test-fjvl.onrender.com/serve-file/${relative}`;
+      } catch {
+        return `https://dzen-test-fjvl.onrender.com/serve-file/${filePath.replace(/^\/media\//, '')}`;
+      }
     }
   },
 computed: {
