@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 from comments.views import CommentViewSet, RegisterView, CachedCommentListView, CaptchaAPIView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from comments.serve_file_view import serve_file_with_charset
+from comments.views import serve_file_with_encoding
 
 router = DefaultRouter()
 router.register(r'comments', CommentViewSet, basename='comment')
@@ -21,7 +21,7 @@ urlpatterns = [
         path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
         path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
         path('captcha/', include('captcha.urls')),
-        path('serve-file/<path:file_path>/', serve_file_with_charset, name='serve_file'),
+        path('serve-file/<path:file_path>', serve_file_with_encoding, name='serve_file'),
     ])),
     path('', lambda request: HttpResponse("Главная страница")),
 ]

@@ -1,3 +1,6 @@
+from django.http import Http404, HttpResponse
+from django.conf import settings
+from urllib.parse import unquote
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
@@ -16,6 +19,7 @@ from .models import Comment
 from .serializers import CommentSerializer, CommentCreateSerializer
 from captcha.models import CaptchaStore
 from captcha.helpers import captcha_image_url
+import os
 
 
 class CommentPagination(PageNumberPagination):
@@ -75,6 +79,21 @@ class RegisterSerializer(ModelSerializer):
             password=validated_data['password']
         )
 
+def serve_file_with_encoding(request, file_path):
+    file_path = unquote(file_path)  # Декодируем кириллический путь из URL
+    abs_path = os.path.join(settings.MEDIA_ROOT, file_path)
+
+    if not os.path.exists(abs_path):
+        raise Http404("Файл не найден")
+
+    try:
+        with open(abs_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except UnicodeDecodeError:
+        with open(abs_path, 'r', encoding='windows-1251') as f:
+            content = f.read()
+
+    return HttpResponse(content, content_type='text/plain; charset=utf-8')
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
