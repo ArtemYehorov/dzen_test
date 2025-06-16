@@ -1,5 +1,5 @@
 <template>
-  <div :class="['max-w-3xl mx-auto space-y-4', isReply ? 'ml-4 text-sm bg-gray-50 p-2 border-l-2 border-blue-300 rounded'] : '']">
+  <div :class="wrapperClass">
     <div v-if="!comments" class="mb-4 flex items-center space-x-2">
       <label class="text-sm font-medium">Сортировать по:</label>
       <select v-model="sortBy" class="p-1 border rounded">
@@ -10,14 +10,7 @@
       </select>
     </div>
 
-    <div
-      v-for="comment in sortedComments"
-      :key="comment.id"
-      :class="[
-        'border rounded p-4',
-        isReply ? 'bg-gray-50 text-sm ml-2' : 'bg-white'
-      ]"
-    >
+    <div v-for="comment in sortedComments" :key="comment.id" class="bg-white border rounded p-4">
       <p class="text-sm text-gray-600">
         <strong>{{ comment.user.name }}</strong>
         <span class="text-gray-400">({{ comment.user.email }})</span><br />
@@ -35,8 +28,8 @@
         </a>
       </div>
 
-      <div v-if="comment.replies?.length" class="mt-4 pl-4 border-l-2 border-gray-300 space-y-2">
-        <CommentList :comments="comment.replies" :is-reply="true" />
+      <div v-if="comment.replies?.length" class="mt-4 space-y-2">
+        <CommentList :comments="comment.replies" :isReply="true" />
       </div>
     </div>
 
@@ -110,6 +103,11 @@ export default {
     }
   },
   computed: {
+    wrapperClass() {
+      return this.isReply
+        ? 'ml-4 text-sm bg-gray-50 p-2 border-l-2 border-blue-300 rounded'
+        : 'max-w-3xl mx-auto space-y-4';
+    },
     sortedComments() {
       const comments = this.localComments.slice();
 
@@ -126,11 +124,15 @@ export default {
       }
 
       if (this.sortBy === 'created_at') {
-        return comments.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        return comments.sort((a, b) =>
+          new Date(a.created_at) - new Date(b.created_at)
+        );
       }
 
       if (this.sortBy === '-created_at') {
-        return comments.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        return comments.sort((a, b) =>
+          new Date(b.created_at) - new Date(a.created_at)
+        );
       }
 
       return comments;
