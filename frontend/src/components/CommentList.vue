@@ -29,8 +29,12 @@
       </div>
 
       <div v-if="comment.file" class="mt-2">
-        <a :href="comment.file" target="_blank" class="text-blue-600 underline">
-          📎 Открыть файл
+        <a
+        :href="comment.file.startsWith('http') ? comment.file : `https://dzen-test-fjvl.onrender.com${comment.file}`"
+        target="_blank"
+        class="text-blue-600 underline"
+        >
+            📎 Открыть файл
         </a>
       </div>
 
