@@ -140,7 +140,6 @@ export default {
     this.loadCaptcha();
     this.loadTopLevelComments();
 
-    // 🔥 Обновление списка через ref
     if (this.$refs.commentList) {
       this.$refs.commentList.fetchComments();
     }

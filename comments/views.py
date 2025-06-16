@@ -80,7 +80,7 @@ class RegisterSerializer(ModelSerializer):
         )
 
 def serve_file_with_encoding(request, file_path):
-    file_path = unquote(file_path)  # Декодируем кириллический путь из URL
+    file_path = unquote(file_path)
     abs_path = os.path.join(settings.MEDIA_ROOT, file_path)
 
     if not os.path.exists(abs_path):
