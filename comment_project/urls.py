@@ -6,8 +6,9 @@ from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 from comments.views import (
     CommentViewSet, RegisterView, CachedCommentListView,
-    CaptchaAPIView, serve_file_with_charset
+    CaptchaAPIView
 )
+from comments.serve_file_view import serve_file_with_charset
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 router = DefaultRouter()
