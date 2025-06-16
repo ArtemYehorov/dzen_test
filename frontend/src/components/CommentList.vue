@@ -1,6 +1,6 @@
 <template>
   <div class="max-w-3xl mx-auto space-y-4">
-    <div class="mb-4 flex items-center space-x-2">
+    <div v-if="!comments" class="mb-4 flex items-center space-x-2">
       <label class="text-sm font-medium">Сортировать по:</label>
       <select v-model="sortBy" class="p-1 border rounded">
         <option value="-created_at">Дате (новые)</option>
@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <div class="flex justify-between items-center mt-4">
+    <div v-if="!comments" class="flex justify-between items-center mt-4">
       <button @click="prevPage" :disabled="page <= 1" class="px-3 py-1 border rounded">← Назад</button>
       <span>Страница {{ page }}</span>
       <button @click="nextPage" :disabled="!hasNext" class="px-3 py-1 border rounded">Вперёд →</button>
