@@ -11,15 +11,12 @@
     </div>
 
     <div
-    v-for="comment in sortedComments"
-    :key="comment.id"
-    :class="[
-        'rounded p-4',
-        depth === 0
-        ? 'bg-white border'
-        : 'bg-gray-100 border border-blue-300 text-sm ml-4'
-    ]"
-    >
+        v-for="comment in sortedComments"
+        :key="comment.id"
+        :style="depth === 0
+        ? 'background-color: white; color: black; padding: 1rem; border: 1px solid #ccc; border-radius: 0.5rem;'
+        : 'background-color: #f5f5f5; color: black; padding: 0.75rem; border-left: 4px solid #4ea1f3; margin-left: 1rem; font-size: 0.9rem; border-radius: 0.5rem;'"
+      >
       <p class="text-sm text-gray-600">
         <strong>{{ comment.user.name }}</strong>
         <span class="text-gray-400">({{ comment.user.email }})</span><br />
