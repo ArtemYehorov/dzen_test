@@ -29,13 +29,9 @@
       </div>
 
       <div v-if="comment.file" class="mt-2">
-        <a
-        :href="comment.file.startsWith('http') ? comment.file : `https://dzen-test-fjvl.onrender.com${comment.file}`"
-        target="_blank"
-        class="text-blue-600 underline"
-        >
+       <a :href="`https://dzen-test-fjvl.onrender.com/serve-file/${comment.file}`" target="_blank">
             📎 Открыть файл
-        </a>
+       </a>
       </div>
 
       <div v-if="comment.replies?.length" class="mt-4 space-y-2">
