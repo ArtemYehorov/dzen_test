@@ -13,8 +13,11 @@
     <div
         v-for="comment in sortedComments"
         :key="comment.id"
-        :class="['border rounded p-4', comments ? 'bg-gray-100 text-sm ml-4' : 'bg-white']"
-       >
+        :class="[
+        'border rounded p-4',
+        depth === 0 ? 'bg-white' : 'bg-gray-100 text-sm ml-4 border-l-4 border-gray-400'
+        ]"
+    >
       <p class="text-sm text-gray-600">
         <strong>{{ comment.user.name }}</strong>
         <span class="text-gray-400">({{ comment.user.email }})</span><br />
@@ -33,7 +36,7 @@
       </div>
 
       <div v-if="comment.replies?.length" class="mt-4 space-y-2">
-        <CommentList :comments="comment.replies" :isReply="true" />
+        <CommentList :comments="comment.replies" :depth="depth + 1" />
       </div>
     </div>
 
@@ -51,16 +54,16 @@ import axios from 'axios';
 
 export default {
   name: 'CommentList',
-  props: {
-    comments: {
-      type: Array,
-      default: null
-    },
-    isReply: {
-      type: Boolean,
-      default: false
-    }
+    props: {
+  comments: {
+    type: Array,
+    default: null
   },
+    depth: {
+        type: Number,
+        default: 0
+      }
+    },
   data() {
     return {
       localComments: [],
