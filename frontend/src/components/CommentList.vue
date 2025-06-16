@@ -10,7 +10,11 @@
       </select>
     </div>
 
-    <div v-for="comment in sortedComments" :key="comment.id" class="bg-white border rounded p-4">
+    <div
+        v-for="comment in sortedComments"
+        :key="comment.id"
+        :class="['border rounded p-4', comments ? 'bg-gray-100 text-sm ml-4' : 'bg-white']"
+       >
       <p class="text-sm text-gray-600">
         <strong>{{ comment.user.name }}</strong>
         <span class="text-gray-400">({{ comment.user.email }})</span><br />
