@@ -7,10 +7,12 @@ __pycache__/
 db.sqlite3
 .env
 *.log
-media/
 staticfiles/
 node_modules/
 *.bak
 .DS_Store
 .idea/
 .vscode/
+/media/*
+!/media/.gitkeep
+!/media/files/.gitkeep
