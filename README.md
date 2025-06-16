@@ -115,8 +115,8 @@ GET /api/comments/?page=1&ordering=-created_at
   "file": null,
   "parent": null
 }
+
 ```
-
-
----
+ER-диаграмма MySQL Workbench: [dzen_test_schema.mwb](./dzen_test_schema.mwb)
+```
 [Artem Yehorov](https://github.com/ArtemYehorov)
